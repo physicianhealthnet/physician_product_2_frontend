@@ -1,0 +1,82 @@
+@import url('https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&family=Inter:wght@300;400;500;600;700&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --color-primary-50: #f0fbfe;
+  --color-primary-100: #dcf6fd;
+  --color-primary-200: #bdedfb;
+  --color-primary-300: #8fdef7;
+  --color-primary-400: #57c7f1;
+  --color-primary-500: #14bef0;
+  --color-primary-600: #1ab0e2;
+  --color-primary-700: #168db7;
+  --color-primary-800: #167192;
+  --color-primary-900: #165f7a;
+
+  --color-slate-50: #f9f9f9;
+  
+  --font-sans: "Lato", sans-serif;
+
+  --radius-xl: 0.125rem;
+  --radius-2xl: 0.125rem;
+  --radius-3xl: 0.125rem;
+}
+
+@layer base {
+  body {
+    @apply font-sans text-slate-600 bg-slate-50 antialiased;
+  }
+}
+
+/* Custom overwrites for Ant Design to match theme if needed */
+/* Custom overwrites for Ant Design to match theme */
+.ant-table-thead>tr>th {
+  background-color: #f8fafc ;
+  /* bg-slate-50 */
+  color: #475569 ;
+  /* text-slate-600 */
+}
+
+
+/* Retaining necessary functional classes */
+.no-print {
+  @media print {
+    display: none;
+  }
+}
+
+.printable {
+  display: none;
+
+  @media print {
+    display: block;
+  }
+}
+
+/* Sidebar Scrollbar Styling */
+.sidebar::-webkit-scrollbar {
+  width: 5px;
+}
+
+.sidebar::-webkit-scrollbar-thumb {
+  @apply bg-slate-300 rounded-full;
+}
+
+.sidebar::-webkit-scrollbar-thumb:hover {
+  @apply bg-slate-400;
+}
+
+/* React Time Picker Customization to look cleaner */
+.react-time-picker__wrapper {
+  @apply border-0 ;
+}
+
+.react-time-picker__inputGroup__input {
+  @apply outline-none bg-transparent ;
+}
+
+input.no-arrows::-webkit-inner-spin-button,
+input.no-arrows::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}

@@ -1,0 +1,280 @@
+@reference "tailwindcss";
+
+.calendar-container {
+    @apply rounded-[3.5rem] overflow-hidden border border-slate-200/60  bg-white/80  backdrop-blur-3xl transition-all;
+    box-shadow: 0 32px 64px -16px rgba(0, 0, 0, 0.1);
+}
+
+/* --- calendar_modern Theme (Main Grid) --- */
+
+.calendar_modern_main {
+    border: none !important;
+    font-family: 'Inter', system-ui, sans-serif !important;
+    background-color: white !important;
+}
+
+
+
+/* Grid & Cell Styling */
+.calendar_modern_cell {
+    background: white !important;
+    border-right: 1px solid #f1f5f9 !important;
+    border-bottom: 1px solid #f1f5f9 !important;
+}
+
+
+
+/* Header Styling */
+.calendar_modern_header {
+    background: #f8fafc !important;
+    border-bottom: 2px solid #e2e8f0 !important;
+    color: #475569 !important;
+    font-weight: 800 !important;
+    padding: 12px !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.1em !important;
+    font-size: 0.7rem !important;
+}
+
+
+
+/* Corner & Row Headers (Time Labels) */
+.calendar_modern_corner {
+    background: #f8fafc !important;
+}
+
+
+
+.calendar_modern_rowheader {
+    background: #f8fafc !important;
+    color: #64748b !important;
+    font-weight: 600 !important;
+    font-size: 0.75rem !important;
+    /* border: 2px solid #e2e8f0 !important; */
+    text-align: center;
+    justify-content: center;
+    align-items: center;
+    display: flex;
+}
+
+
+
+/* Event Styling */
+.calendar_modern_event {
+    border-radius: 5px !important;
+    overflow: hidden !important;
+    border: none !important;
+    box-shadow: 0 4px 12px -2px rgba(0, 0, 0, 0.15), 0 2px 6px -1px rgba(0, 0, 0, 0.1) !important;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+.calendar_modern_event:hover {
+    z-index: 100 !important;
+}
+
+.calendar_modern_event_inner {
+    padding: 10px 14px !important;
+    font-weight: 700 !important;
+    font-size: 0.8rem !important;
+    border-radius: 5px !important;
+    border: none !important;
+    color: white !important;
+}
+
+.calendar_modern_event_bar {
+    width: 6px !important;
+    border-radius: 6px 0 0 6px !important;
+    background-color: rgba(255, 255, 255, 0.4) !important;
+    top: 0 !important;
+    bottom: 0 !important;
+    left: 0 !important;
+}
+
+/* --- navigator_modern Theme (Sidebar Mini Calendar) --- */
+
+.navigator_modern_main table {
+    table-layout: fixed !important;
+    width: 100% !important;
+    border-collapse: separate !important;
+    border-spacing: 0 8px !important;
+}
+
+.navigator_modern_main {
+    border: none !important;
+    background: transparent !important;
+    border-radius: 2rem !important;
+    padding: 0 !important;
+    width: 100% !important;
+    min-width: 340px !important;
+}
+
+.navigator_modern_month {
+    color: #475569 !important;
+    font-weight: 900 !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.3em !important;
+    padding: 24px 0 10px 0 !important;
+    text-align: center !important;
+    font-size: 0.95rem !important;
+    text-indent: 0.3em !important;
+}
+
+
+
+.navigator_modern_dayheader {
+    color: #94a3b8 !important;
+    font-size: 0.7rem !important;
+    font-weight: 900 !important;
+    padding: 6px 0 !important;
+    text-align: center !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.2em !important;
+}
+
+.navigator_modern_day {
+    color: #64748b !important;
+    font-size: 0.9rem !important;
+    font-weight: 800 !important;
+    border-radius: 50% !important;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    width: 38px !important;
+    height: 38px !important;
+    line-height: 38px !important;
+    display: block !important;
+    text-align: center !important;
+    margin: 0 auto !important;
+    border: 1px solid transparent !important;
+}
+
+
+
+.navigator_modern_day:hover {
+    background-color: #f1f5f9 !important;
+    color: #14BEF0 !important;
+}
+
+
+
+.navigator_modern_select {
+    background-color: #14BEF0 !important;
+    color: white !important;
+    border-radius: 14px !important;
+    font-weight: 900 !important;
+    box-shadow: 0 8px 16px -4px rgba(37, 99, 235, 0.5) !important;
+}
+
+.navigator_modern_busy {
+    background-color: rgba(59, 130, 246, 0.08) !important;
+    color: #14BEF0 !important;
+    font-weight: 900 !important;
+}
+
+
+
+.navigator_modern_today {
+    border: 2px solid #14BEF0 !important;
+    color: #14BEF0 !important;
+    border-radius: 10px !important;
+}
+
+/* --- Month View Styling (Month-specific grid) --- */
+.month_modern_main {
+    border: none !important;
+    background-color: white !important;
+}
+
+
+
+.month_modern_cell {
+    background-color: white !important;
+    border-right: 1px solid #f1f5f9 !important;
+    border-bottom: 1px solid #f1f5f9 !important;
+}
+
+.month_modern_cell_inner , .month_modern_event {
+    padding: 5px;
+}
+
+.month_modern_event {
+    border-radius: 4px !important;
+    overflow: hidden !important;
+    border: none !important;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    transition: all 0.2s ease-in-out;
+}
+
+.month_modern_event:hover {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.month_modern_event_inner {
+    border-radius: 4px !important;
+    padding: 2px 6px !important;
+    color: white !important;
+    font-size: 0.70rem !important;
+    font-weight: 700 !important;
+    display: flex;
+    align-items: center;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+
+
+/* Custom Scrollbar - Sleek */
+.center-body::-webkit-scrollbar,
+.custom-scrollbar::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+.center-body::-webkit-scrollbar-track,
+.custom-scrollbar::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.center-body::-webkit-scrollbar-thumb,
+.custom-scrollbar::-webkit-scrollbar-thumb {
+    background: rgba(148, 163, 184, 0.4) !important;
+    border-radius: 10px !important;
+}
+
+.center-body::-webkit-scrollbar-thumb:hover,
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: rgba(100, 116, 139, 0.7) !important;
+}
+
+/* Premium Ant Design Select Overrides */
+.custom-select-premium .ant-select-selector {
+    border-radius: 1.25rem !important;
+    height: 48px !important;
+    padding: 0 16px !important;
+    border: 1px solid rgba(226, 232, 240, 0.6) !important;
+    background: white !important;
+    display: flex !important;
+    align-items: center !important;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+
+
+.custom-select-premium.ant-select-focused .ant-select-selector {
+    border-color: #14BEF0 !important;
+    box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1) !important;
+}
+
+.custom-select-premium .ant-select-selection-placeholder {
+    font-weight: 700 !important;
+    font-size: 0.8rem !important;
+    letter-spacing: -0.01em !important;
+    color: #94a3b8 !important;
+}
+
+.custom-select-premium .ant-select-selection-item {
+    font-weight: 800 !important;
+    font-size: 0.85rem !important;
+    color: #1e293b !important;
+    display: flex !important;
+    align-items: center !important;
+}

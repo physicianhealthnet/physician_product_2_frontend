@@ -1,0 +1,10 @@
+.ant-table-thead > tr > th {
+  font-size: 18px !important;
+  text-align: center !important;
+}
+.ant-table-tbody > tr > td {
+  font-size: 18px;
+}
+.ant-table-tbody , .ant-table-thead{
+  text-align: center;
+}
