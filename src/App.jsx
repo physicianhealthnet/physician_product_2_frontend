@@ -11,6 +11,7 @@ import MainLayout from "./component/Layout/MainLayout";
 import { PageSkeleton } from "./component/ui/Skeleton";
 import DashboardWrapper from "./component/DashboardWrapper";
 import PageTransition from "./component/ui/PageTransition";
+import Revenue from "./component/analitics/Revenue";
 
 // Lazy Load Pages
 const Home = lazy(() => import("./pages/receptionist/home/Home"));
@@ -400,6 +401,14 @@ const AppContent = () => {
             element={
               <PageTransition>
                 <Identicards />
+              </PageTransition>
+            }
+          />
+          <Route
+            path="/revenue"
+            element={
+              <PageTransition>
+                <Revenue />
               </PageTransition>
             }
           />

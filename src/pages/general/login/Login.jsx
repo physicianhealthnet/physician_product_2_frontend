@@ -75,8 +75,8 @@ const Login = ({ initialTab = "login" }) => {
           "master",
           JSON.stringify({
             ...response.data.user,
-            cid: "PHN-C-0002",
-            clinicId: "PHN-C-0002",
+            cid: "PHN-C-0001",
+            clinicId: "PHN-C-0001",
           }),
         );
       } else {
@@ -84,8 +84,8 @@ const Login = ({ initialTab = "login" }) => {
           "user",
           JSON.stringify({
             ...response.data.user,
-            cid: "PHN-C-0002",
-            clinicId: "PHN-C-0002",
+            cid: "PHN-C-0001",
+            clinicId: "PHN-C-0001",
           }),
         );
       }
@@ -135,7 +135,7 @@ const Login = ({ initialTab = "login" }) => {
         phone: regPhone,
         password: regPassword,
         userType: regUserType.toLowerCase(),
-        clinicId: "PHN-C-0002",
+        clinicId: "PHN-C-0001",
       };
 
       if (regUserType === "Doctor") {
@@ -335,7 +335,7 @@ const Login = ({ initialTab = "login" }) => {
                   type="text"
                   value={regClinicId}
                   onChange={(e) => setRegClinicId(e.target.value)}
-                  placeholder="e.g. PHN-C-0002"
+                  placeholder="e.g. PHN-C-0001"
                   required
                 /> */}
 

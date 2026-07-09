@@ -83,7 +83,6 @@ function Prescription({ history, treatment_id, data }) {
     setAiReport(presc.aiPharmacyReport || "");
     setAiModalOpen(true);
   };
-
   const [formData, setFormData] = useState({
     medication: "",
     dosage: "",

@@ -208,7 +208,7 @@ function Identicards({ isPublic }) {
         issueDate: new Date().toISOString().split("T")[0],
         expiryDate: new Date(new Date().setFullYear(new Date().getFullYear() + 2)).toISOString().split("T")[0],
         clinicName: "PHN Global Healthcare",
-        clinicLocation: `Clinic ${entity.clinicId || "PHN-C-0002"}`,
+        clinicLocation: `Clinic ${entity.clinicId || "PHN-C-0001"}`,
         photo: "",
         avatarPreset: entity.userType === "doctor" ? "doc_m" : entity.userType === "receptionist" ? "reception" : "nurse",
       });

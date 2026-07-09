@@ -102,7 +102,7 @@ function DoctorAndStaffs() {
     // Get master's clinicId securely
     const userStr = sessionStorage.getItem("master") || sessionStorage.getItem("user");
     const loggedInUser = userStr ? JSON.parse(userStr) : null;
-    const cid = loggedInUser?.clinicId || "PHN-C-0002";
+    const cid = loggedInUser?.clinicId || "PHN-C-0001";
 
     setAddLoading(true);
     try {

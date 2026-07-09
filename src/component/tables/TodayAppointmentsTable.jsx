@@ -128,14 +128,7 @@ const TodayAppointmentsTable = () => {
                       <span className="font-bold text-slate-700 text-sm">{appt.patientName}</span>
                     </td>
                     <td className="px-6 py-4">
-                      <span className="font-bold text-slate-600 text-sm flex items-center gap-2">
-                        {appt.docName}
-                        {(appt.isOnline || appt.clinicLocation === "Video Call") && (
-                          <span className="bg-indigo-100 text-indigo-700 px-1.5 py-0.5 rounded text-[9px] uppercase font-black flex items-center gap-1" title="Video Consult">
-                            <Icon icon="solar:videocamera-bold" />
-                          </span>
-                        )}
-                      </span>
+                      <span className="font-bold text-slate-600 text-sm">{appt.docName}</span>
                     </td>
                     <td className="px-6 py-4">
                       <span className="font-bold text-slate-600 text-sm">{appt.clinicNumber}</span>

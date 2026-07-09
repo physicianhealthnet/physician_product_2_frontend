@@ -11,13 +11,18 @@ import { sendTemplateWhatsApp } from "../../../component/whatsApp/sendTemplateWh
 import PharmacyAnalytics from "./PharmacyAnalytics";
 import dayjs from "dayjs";
 import AIGaugeReport from "../../../component/ui/AIGaugeReport";
+import { useNavigate } from "react-router-dom";
 
 function Pharmacy() {
+  const navigate = useNavigate();
   const [prescriptions, setPrescriptions] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedPrescription, setSelectedPrescription] = useState(null);
   const [dispenseModalOpen, setDispenseModalOpen] = useState(false);
+  const [isViewMedModalOpen, setIsViewMedModalOpen] = useState(false);
+  const [localMedicineStatus, setLocalMedicineStatus] = useState({});
+  const [isSavingStatus, setIsSavingStatus] = useState(false);
   const [activeTab, setActiveTab] = useState("queue");
   const [inventoryList, setInventoryList] = useState([]);
   const clinicId = JSON.parse(sessionStorage.getItem("user"))?.clinicId;
@@ -109,6 +114,44 @@ function Pharmacy() {
       message.error("Failed to generate AI report");
     } finally {
       setIsAnalyzing(false);
+    }
+  };
+
+  const handleToggleStatus = (medId) => {
+    setLocalMedicineStatus(prev => {
+      const current = prev[medId] || "pending";
+      let next = "pending";
+      if (current === "pending") next = "given";
+      else if (current === "given") next = "not available";
+      else next = "pending";
+      return { ...prev, [medId]: next };
+    });
+  };
+
+  const handleSaveMedicineStatuses = async () => {
+    try {
+      setIsSavingStatus(true);
+      const promises = Object.entries(localMedicineStatus).map(([medicineId, status]) => {
+        const originalStatus = selectedPrescription.medicinesData.find(m => m._id === medicineId)?.status || "pending";
+        if (originalStatus !== status) {
+          return AxiosInstance.patch("/prescription/update-medicine-status", {
+            prescriptionId: selectedPrescription._id,
+            medicineId,
+            status,
+          });
+        }
+        return Promise.resolve();
+      });
+      
+      await Promise.all(promises);
+      message.success("Medicine statuses saved successfully!");
+      setIsViewMedModalOpen(false);
+      fetchPrescriptions();
+    } catch (error) {
+      console.error(error);
+      message.error("Failed to update medicine statuses");
+    } finally {
+      setIsSavingStatus(false);
     }
   };
 
@@ -354,6 +397,7 @@ function Pharmacy() {
                 <thead>
                   <tr className="bg-slate-100/50 backdrop-blur-md">
                     <th className="px-8 py-6 text-[10px] font-black uppercase tracking-widest text-slate-500 border-b border-slate-200">Patient Details</th>
+                    <th className="px-8 py-6 text-[10px] font-black uppercase tracking-widest text-slate-500 border-b border-slate-200">Prescription ID</th>
                     <th className="px-8 py-6 text-[10px] font-black uppercase tracking-widest text-slate-500 border-b border-slate-200 text-center">Date</th>
                     <th className="px-8 py-6 text-[10px] font-black uppercase tracking-widest text-slate-500 border-b border-slate-200 text-center">Status</th>
                     <th className="px-8 py-6 text-[10px] font-black uppercase tracking-widest text-slate-500 border-b border-slate-200 text-center">Refills</th>
@@ -364,7 +408,7 @@ function Pharmacy() {
                 <tbody className="divide-y divide-slate-100">
                   {loading ? (
                     <tr>
-                      <td colSpan="5" className="p-0">
+                      <td colSpan="6" className="p-0">
                         <TableSkeleton rows={8} />
                       </td>
                     </tr>
@@ -385,11 +429,16 @@ function Pharmacy() {
                               <span className="font-bold text-slate-800 text-sm capitalize">
                                 {p.patientName}
                               </span>
-                              <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-1">
-                                ID: {p.prescriptionId?.slice(-8)}
+                              <span className="text-[10px] font-bold text-slate-400 tracking-wide mt-1">
+                                {p.PHN_ID ? `ID: ${p.PHN_ID} • ` : ""} {p.patientPhone !== "N/A" ? p.patientPhone : "No Phone"} • {p.patientAddress !== "N/A" ? p.patientAddress : "No Address"}
                               </span>
                             </div>
                           </div>
+                        </td>
+                        <td className="px-8 py-6">
+                          <span className="text-sm font-bold text-slate-700 font-mono bg-slate-100 px-3 py-1 rounded-md border border-slate-200">
+                            {p.prescriptionId || p._id.slice(-8)}
+                          </span>
                         </td>
                         <td className="px-8 py-6 text-center">
                           <span className="text-xs font-bold text-slate-600">
@@ -480,6 +529,21 @@ function Pharmacy() {
                             <button
                               onClick={() => {
                                 setSelectedPrescription(p);
+                                const initialStatus = {};
+                                p.medicinesData?.forEach(m => {
+                                  initialStatus[m._id] = m.status || "pending";
+                                });
+                                setLocalMedicineStatus(initialStatus);
+                                setIsViewMedModalOpen(true);
+                              }}
+                              className="p-3 bg-purple-50 text-purple-600 rounded-xl transition-all shadow-sm border border-purple-100 hover:scale-110 active:scale-95"
+                              title="View Medicines"
+                            >
+                              <Icon icon="solar:pills-bold-duotone" width="20" />
+                            </button>
+                            <button
+                              onClick={() => {
+                                setSelectedPrescription(p);
                                 setDispenseModalOpen(true);
                                 if (p.aiPharmacyReport) {
                                   setAiReport(p.aiPharmacyReport);
@@ -505,7 +569,7 @@ function Pharmacy() {
                     ))
                   ) : (
                     <tr>
-                      <td colSpan="5" className="py-20 text-center">
+                      <td colSpan="6" className="py-20 text-center">
                         <div className="flex flex-col items-center gap-4 text-slate-300">
                           <Icon
                             icon="solar:clipboard-remove-bold-duotone"
@@ -704,6 +768,75 @@ function Pharmacy() {
             </div>
           </div>
         )}
+      </Modal>
+
+      {/* View Medicines Modal */}
+      <Modal
+        title={<div className="flex items-center gap-2 text-purple-700 font-black tracking-widest uppercase"><Icon icon="solar:pills-bold-duotone" width="24" /> Prescription Medicines</div>}
+        open={isViewMedModalOpen}
+        onCancel={() => setIsViewMedModalOpen(false)}
+        footer={
+          <div className="flex justify-end gap-3 mt-6 pt-4 border-t border-slate-100">
+            <button
+              onClick={() => setIsViewMedModalOpen(false)}
+              className="px-6 py-2 text-xs font-black uppercase tracking-widest text-slate-500 hover:text-slate-700 bg-slate-100 hover:bg-slate-200 rounded-xl transition-all"
+            >
+              Cancel
+            </button>
+            <button
+              onClick={handleSaveMedicineStatuses}
+              disabled={isSavingStatus}
+              className="px-6 py-2 text-xs font-black uppercase tracking-widest text-white bg-purple-600 hover:bg-purple-700 rounded-xl transition-all shadow-md flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              {isSavingStatus && <Icon icon="eos-icons:loading" width="16" />}
+              Save Changes
+            </button>
+          </div>
+        }
+        width={650}
+        centered
+        className="backdrop-blur-sm"
+      >
+        <div className="flex flex-col gap-4 mt-6">
+          {selectedPrescription?.medicinesData?.map((med, index) => (
+            <div key={index} className="flex justify-between items-center p-4 bg-slate-50 hover:bg-slate-100 border border-slate-200 rounded-xl transition-all shadow-sm">
+              <div className="flex flex-col gap-1 flex-1">
+                <span className="font-black text-slate-800 text-lg">{med.medicationName || med.medication}</span>
+                <span className="text-xs font-bold text-slate-500 uppercase tracking-widest bg-white w-fit px-2 py-0.5 rounded border border-slate-200">
+                  Dosage: {med.dosage} • {med.days} Days
+                </span>
+              </div>
+              <div className="flex items-center gap-8">
+                <div className="flex flex-col items-center gap-2">
+                  <span className="text-[10px] font-black uppercase text-slate-400 tracking-widest">Status</span>
+                  <button
+                    onClick={() => handleToggleStatus(med._id)}
+                    className={`px-4 py-1.5 min-w-[100px] rounded-lg text-[10px] font-black uppercase tracking-widest transition-all border ${
+                      localMedicineStatus[med._id] === "given"
+                        ? "bg-emerald-50 text-emerald-600 border-emerald-200"
+                        : localMedicineStatus[med._id] === "not available"
+                        ? "bg-rose-50 text-rose-600 border-rose-200"
+                        : "bg-amber-50 text-amber-600 border-amber-200"
+                    }`}
+                  >
+                    {localMedicineStatus[med._id] || "pending"}
+                  </button>
+                </div>
+                <div className="flex flex-col items-end">
+                  <span className="text-[10px] font-black uppercase text-purple-600 tracking-widest mb-1">Total Qty</span>
+                  <div className="w-12 h-12 bg-white border-2 border-purple-100 rounded-xl flex items-center justify-center shadow-inner">
+                    <span className="font-black text-xl text-slate-800">{calculateQuantity(med) || 1}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          ))}
+          {(!selectedPrescription?.medicinesData || selectedPrescription.medicinesData.length === 0) && (
+            <div className="text-center py-10 text-slate-400 font-semibold">
+              No medicines found in this prescription.
+            </div>
+          )}
+        </div>
       </Modal>
 
       <style>{`

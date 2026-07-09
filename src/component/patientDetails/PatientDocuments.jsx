@@ -59,14 +59,12 @@ function PatientDocuments({ documents, swaper, topics, title, readOnly }) {
         AxiosInstance.get(`/prescription/patient/${patient_id}`).catch(()=>({data:[]}))
       ]);
       
-      // Filter out patient-uploaded (out of network) documents
-      const rawNormalDocs = (response?.data?.documents || []).filter(d => d.doctorId);
+      const rawNormalDocs = response?.data?.documents || [];
       const normalDocs = rawNormalDocs.map(d => {
         let p = d.documentPath || "";
         p = p.replace("https://demo.physicianhealthnet.com/api", AxiosInstance.defaults.baseURL);
         return {
           ...d,
-          type: d.documentType || "Other",
           documentPath: p.startsWith('http') ? p : (p ? `${AxiosInstance.defaults.baseURL}${p}` : '')
         };
       });
@@ -113,13 +111,7 @@ function PatientDocuments({ documents, swaper, topics, title, readOnly }) {
         };
       });
 
-      const allDocs = [...normalDocs, ...scanDocs, ...labDocs, ...prescriptionDocs];
-      allDocs.sort((a, b) => {
-        const dateA = a.createdAt || a.raw?.createdAt || new Date(0);
-        const dateB = b.createdAt || b.raw?.createdAt || new Date(0);
-        return new Date(dateB) - new Date(dateA);
-      });
-      setPatientDocuments(allDocs);
+      setPatientDocuments([...normalDocs, ...scanDocs, ...labDocs, ...prescriptionDocs]);
     } catch (error) {
       console.error("Error fetching patient documents:", error);
       message.error("Failed to fetch patient documents");
@@ -148,50 +140,32 @@ function PatientDocuments({ documents, swaper, topics, title, readOnly }) {
       formDataToSend.append("patientId", patient_id);
       formDataToSend.append("doctorId", doctorId);
       formDataToSend.append("doctorName", doctorName);
-      if (editingDocId) {
-        await AxiosInstance.put(`/patientdocuments/edit/${editingDocId}`, formDataToSend, {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        });
-        message.success("Document updated successfully");
-      } else {
-        await AxiosInstance.post("/patientdocuments/create", formDataToSend, {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        });
-        message.success("Document uploaded successfully");
-      }
+      await AxiosInstance.post("/patientdocuments/create", formDataToSend, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+      message.success("Document uploaded successfully");
       setFormData({ topic: "", documentName: "", documentFile: null });
-      setEditingDocId(null);
       setDocUploaderOpener(false);
       getPatientDocuments();
     } catch (error) {
-      message.error(editingDocId ? "Error updating document" : "Error uploading document");
-      console.error("Error saving document:", error);
+      message.error("Error uploading document");
+      console.error("Error uploading document:", error);
     } finally {
       setLoading(false);
     }
   };
 
-  const handleEdit = (doc) => {
-    let rawName = doc.documentName || "";
-    let topicMatch = rawName.match(/^\[(.*?)\] (.*)$/);
-    let topic = "";
-    let name = rawName;
-    if (topicMatch) {
-      topic = topicMatch[1];
-      name = topicMatch[2];
+  const handleDelete = async (data) => {
+    try {
+      await AxiosInstance.delete(`/patientdocuments/delete/${data._id}`);
+      message.success("Document deleted successfully");
+      getPatientDocuments();
+    } catch (error) {
+      message.error("Failed to delete document");
+      console.error(error);
     }
-
-    setFormData({
-      topic,
-      documentName: name,
-      documentFile: null
-    });
-    setEditingDocId(doc._id || doc.raw?._id);
-    setDocUploaderOpener(true);
   };
 
   useEffect(() => {
@@ -405,13 +379,15 @@ function PatientDocuments({ documents, swaper, topics, title, readOnly }) {
                                         <Icon icon="solar:close-circle-bold-duotone" /> No File
                                       </span>
                                     )}
+                                    {!swaper && !readOnly && !doc.type && (
                                       <button
-                                        onClick={() => handleEdit(doc)}
-                                        className="text-blue-500 hover:text-blue-700 hover:bg-blue-50 p-1.5 rounded transition-colors"
-                                        title="Edit"
+                                        onClick={() => handleDelete(doc)}
+                                        className="text-red-500 hover:text-red-700 hover:bg-red-50 p-1.5 rounded transition-colors"
+                                        title="Delete"
                                       >
-                                        <Icon icon="solar:pen-bold" width={16} />
+                                        <Icon icon="solar:trash-bin-trash-bold" width={16} />
                                       </button>
+                                    )}
                                   </div>
                                 </td>
                               </tr>

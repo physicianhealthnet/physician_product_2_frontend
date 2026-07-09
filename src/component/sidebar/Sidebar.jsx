@@ -86,9 +86,7 @@ const MENU_ITEMS = {
     { text: "Pharmacy Management", route: "/pharmacy" },
     {
       text: "Administration",
-      subMenu: [
-        { text: "Identicards", route: "/administration/identicards" },
-      ],
+      subMenu: [{ text: "Identicards", route: "/administration/identicards" }],
     },
   ],
   doctor: [
@@ -131,9 +129,7 @@ const MENU_ITEMS = {
     },
     {
       text: "Administration",
-      subMenu: [
-        { text: "Identicards", route: "/administration/identicards" },
-      ],
+      subMenu: [{ text: "Identicards", route: "/administration/identicards" }],
     },
   ],
   accountant: [
@@ -151,9 +147,7 @@ const MENU_ITEMS = {
     { text: "Pharmacy Management", route: "/pharmacy" },
     {
       text: "Administration",
-      subMenu: [
-        { text: "Identicards", route: "/administration/identicards" },
-      ],
+      subMenu: [{ text: "Identicards", route: "/administration/identicards" }],
     },
   ],
   master: [
@@ -175,8 +169,12 @@ const MENU_ITEMS = {
     { text: "AI X-Ray Analysis", route: "/xray-analysis" },
     {
       text: "Administration",
+      subMenu: [{ text: "Identicards", route: "/administration/identicards" }],
+    },
+    {
+      text: "Analytics",
       subMenu: [
-        { text: "Identicards", route: "/administration/identicards" },
+        { text: "Revenue", route: "/revenue" },
       ],
     },
   ],
@@ -241,7 +239,10 @@ const Sidebar = () => {
               if (item.subMenu) {
                 const isExpanded = expandedMenus[item.text];
                 return (
-                  <div key={`menu-${index}-${item.text}`} className="flex flex-col">
+                  <div
+                    key={`menu-${index}-${item.text}`}
+                    className="flex flex-col"
+                  >
                     <div onClick={() => toggleSubmenu(item.text)}>
                       <SidebarItem
                         text={item.text}
@@ -253,11 +254,14 @@ const Sidebar = () => {
                     </div>
                     <AnimatePresence>
                       {isExpanded && isOpen && (
-                        <motion.div 
+                        <motion.div
                           initial={{ opacity: 0, height: 0 }}
                           animate={{ opacity: 1, height: "auto" }}
                           exit={{ opacity: 0, height: 0 }}
-                          transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+                          transition={{
+                            duration: 0.8,
+                            ease: [0.22, 1, 0.36, 1],
+                          }}
                           className="flex flex-col bg-[#fbfbfc] border-y border-gray-100/50 overflow-hidden"
                         >
                           {item.subMenu.map((subItem) => {

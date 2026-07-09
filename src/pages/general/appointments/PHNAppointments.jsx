@@ -695,13 +695,8 @@ function PHNAppointments() {
                       <tr key={appt._id} className="hover:bg-slate-50/80 border-b border-slate-100/50 transition-colors duration-200 group">
                         <td className="p-4 pl-6">
                           <div className="flex flex-col gap-1">
-                            <span className="font-bold text-slate-800 text-sm tracking-tight group-hover:text-blue-600 transition-colors flex items-center gap-2">
+                            <span className="font-bold text-slate-800 text-sm tracking-tight group-hover:text-blue-600 transition-colors">
                               {appt.docName}
-                              {(appt.isOnline || appt.clinicLocation === "Video Call") && (
-                                <span className="bg-indigo-100 text-indigo-700 px-2 py-0.5 rounded text-[9px] uppercase font-black flex items-center gap-1 shadow-sm border border-indigo-200">
-                                  <Icon icon="solar:videocamera-bold" className="text-xs" /> Video Consult
-                                </span>
-                              )}
                             </span>
                             <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">{appt.clinicName}</span>
                           </div>
@@ -797,16 +792,6 @@ function PHNAppointments() {
                             >
                               <Icon icon="tabler:calendar-time" />
                             </button>
-
-                            {isApproved && (appt.isOnline || appt.clinicLocation === "Video Call") && (
-                              <button
-                                onClick={() => navigate('/video-consult', { state: { roomName: `PHN-Consultation-${appt._id}` } })}
-                                className="w-8 h-8 rounded-lg flex items-center justify-center text-white bg-indigo-500 hover:bg-indigo-600 hover:scale-110 transition-all p-0 shadow-sm border border-indigo-600"
-                                title="Enter Video Consult"
-                              >
-                                <Icon icon="solar:videocamera-bold" />
-                              </button>
-                            )}
                           </div>
                         </td>
                       </tr>

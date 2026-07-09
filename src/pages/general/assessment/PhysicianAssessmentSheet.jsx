@@ -526,7 +526,7 @@ export default function PhysicianAssessmentSheet() {
       setChiefComplaintsList(d.chiefComplaintsList || []);
       setHistoryOfPresentIllnessList(d.historyOfPresentIllnessList || []);
       let vitalsData = d.vitals || [];
-      console.log(vitalsData,"Needed data");
+      console.log(vitalsData,"needed Data");
       
       if (!Array.isArray(vitalsData)) {
         vitalsData = Object.keys(vitalsData).length ? [vitalsData] : [];
@@ -832,7 +832,7 @@ export default function PhysicianAssessmentSheet() {
   const payload = {
     patientId: patient_id,
     clinicId,
-    phnId: patientInfo?.PHN_ID,
+    phnId:patientInfo?.PHN_ID,
     medicalChecks,
     medicalNotes,
     chiefComplaints,

@@ -3,6 +3,7 @@ import { createPortal } from "react-dom";
 import { Icon } from "@iconify/react";
 import { AxiosInstance } from "../../utilities/AxiosInstance";
 import dayjs from "dayjs";
+import { message } from "antd";
 
 const PatientClinicalDataModal = ({ isOpen, onClose, patientId, dataType, type, filterDate }) => {
   const actualType = dataType || type;
@@ -55,7 +56,41 @@ const PatientClinicalDataModal = ({ isOpen, onClose, patientId, dataType, type, 
     };
 
     fetchData();
+    fetchData();
   }, [isOpen, patientId, actualType, filterDate]);
+
+  const toggleMedicineStatus = async (prescriptionId, medicineId, currentStatus) => {
+    try {
+      // Cycle: pending -> given -> not available -> pending
+      let newStatus = "given";
+      if (currentStatus === "given") newStatus = "not available";
+      else if (currentStatus === "not available") newStatus = "pending";
+
+      // We will need a backend endpoint for this, assuming it's /prescription/update-medicine-status
+      await AxiosInstance.patch(`/prescription/update-medicine-status`, {
+        prescriptionId,
+        medicineId,
+        status: newStatus
+      });
+      message.success(`Medicine marked as ${newStatus}`);
+      
+      // Update local state
+      setData(prevData => prevData.map(rx => {
+        if (rx._id === prescriptionId) {
+          return {
+            ...rx,
+            medicinesData: rx.medicinesData.map(med => 
+              med._id === medicineId ? { ...med, status: newStatus } : med
+            )
+          };
+        }
+        return rx;
+      }));
+    } catch (err) {
+      console.error("Error updating medicine status:", err);
+      message.error("Failed to update medicine status");
+    }
+  };
 
   if (!isOpen) return null;
 
@@ -118,10 +153,24 @@ const PatientClinicalDataModal = ({ isOpen, onClose, patientId, dataType, type, 
                       <div className="space-y-1.5">
                         {rx.medicinesData.map((med, mIdx) => (
                           <div key={mIdx} className="bg-slate-50 p-1.5 rounded text-xs border border-slate-100 flex justify-between items-center gap-2">
-                            <span className="font-bold text-slate-800">{med.medicationName || med.medication}</span>
-                            <span className="text-[10px] text-slate-500 font-medium whitespace-nowrap">
-                              {med.dosage} • {med.days ? `${med.days} Days` : ''}
-                            </span>
+                            <div className="flex flex-col">
+                              <span className="font-bold text-slate-800">{med.medicationName || med.medication}</span>
+                              <span className="text-[10px] text-slate-500 font-medium whitespace-nowrap">
+                                {med.dosage} • {med.days ? `${med.days} Days` : ''}
+                              </span>
+                            </div>
+                            <button
+                              onClick={() => toggleMedicineStatus(rx._id, med._id, med.status)}
+                              className={`px-2 py-1 rounded text-[10px] font-bold transition-colors ${
+                                med.status === 'given' 
+                                  ? 'bg-green-100 text-green-700 hover:bg-green-200' 
+                                  : med.status === 'not available'
+                                    ? 'bg-red-100 text-red-700 hover:bg-red-200'
+                                    : 'bg-amber-100 text-amber-700 hover:bg-amber-200'
+                              }`}
+                            >
+                              {med.status === 'given' ? 'Given' : med.status === 'not available' ? 'Not Available' : 'Pending'}
+                            </button>
                           </div>
                         ))}
                       </div>
