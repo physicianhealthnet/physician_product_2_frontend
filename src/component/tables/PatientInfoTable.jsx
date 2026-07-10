@@ -259,7 +259,7 @@ const PatientInfoTable = () => {
       </div>
 
       {/* Table */}
-      <div className="overflow-auto rounded-sm border border-slate-200 shadow-sm flex-1 custom-scrollbar h-[calc(100vh-250px)]">
+      <div className="overflow-auto rounded-sm border border-slate-200 shadow-sm flex-1 custom-scrollbar h-fit">
         <table className="w-full text-sm text-left whitespace-nowrap min-w-max border-collapse">
           <thead className="bg-slate-50 border-b border-slate-200 text-slate-500 font-medium uppercase tracking-wider sticky top-0 z-20">
             <tr>

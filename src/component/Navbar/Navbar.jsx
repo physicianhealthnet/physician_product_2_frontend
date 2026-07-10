@@ -103,9 +103,11 @@ function Navbar() {
             <div className="flex flex-col items-start leading-tight">
               <span className="font-semibold text-slate-700 text-sm">
                 {userInfo?.userName || "User"}
+                {userInfo?.userType === "doctor" && userInfo?.department && ` - ${userInfo.department}`}
               </span>
               <span className="text-xs text-slate-500 font-medium">
                 {userRole}
+                {userInfo?.userType === "doctor" && userInfo?.userId && ` - ID: ${userInfo.userId}`}
               </span>
             </div>
             <DownOutlined className="text-[10px] text-slate-400" />
